@@ -62,7 +62,7 @@ public class EmbeddedMediaPlayer extends Application {
         primaryStage.show();
     }
 
-    public void onKeyPressed(Scene scene, MediaView view){
+    private void onKeyPressed(Scene scene, MediaView view){
         openNewVideo(view, "");
         String pathToImage = "";
         view.getMediaPlayer().setOnEndOfMedia(() -> {
@@ -74,7 +74,7 @@ public class EmbeddedMediaPlayer extends Application {
 
     }
 
-    public void openNewVideo(MediaView view, String path){
+    private void openNewVideo(MediaView view, String path){
         view.setMediaPlayer(new MediaPlayer(new Media(getClass().getResource(path).toExternalForm())));
     }
 
