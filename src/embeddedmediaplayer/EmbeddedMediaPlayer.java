@@ -41,15 +41,23 @@ public class EmbeddedMediaPlayer extends Application {
     private boolean[] listener = new boolean[2];
     @SuppressWarnings("StatementWithEmptyBody")
     private void sayWinners(Scene scene, MediaView view){
-        for(int i = 0; i < WINNERS; i++){
-            listener[0] = false;
-            openNewVideo(scene, view, SUSPANCE, null, () -> listener[0] = true);
-            while(!listener[0]){}
-            listener[1] = false;
-            openNewVideo(scene, view, String.format("%d.jpg", winner()), event -> listener[1] = true, null);
-            while (!listener[1]){}
-        }
-        endOfLife(scene, view);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                System.out.println("Ingresso in sayWinners");
+                for(int i = 0; i < WINNERS; i++){
+                    listener[0] = false;
+                    System.out.println("Inizio apertura suspance");
+                    openNewVideo(scene, view, SUSPANCE, event -> {}, () -> listener[0] = true);
+                    System.out.println("Fine apertura suspance");
+                    while(!listener[0]){}
+                    listener[1] = false;
+                    openNewVideo(scene, view, String.format("%s.mp4", winner()), event -> listener[1] = true, () -> {});
+                    while (!listener[1]){}
+                }
+                endOfLife(scene, view);
+            }
+        }).start();
     }
 
     private void endOfLife(Scene scene, MediaView view){
@@ -57,12 +65,16 @@ public class EmbeddedMediaPlayer extends Application {
     }
 
     private Set<Integer> winners = new HashSet<>();
-    private int winner(){
+    private int winner() {
         Random rand = new Random();
         int w;
-        do w = rand.nextInt(CANDIDATES);
-            while (winners.contains(w) || new File(String.format("%d.jpg", w)).exists());
+        do {
+            w = rand.nextInt(CANDIDATES);
+            System.out.printf("Numero estratto non verificato: %d\n", w);
+        }
+            while (winners.contains(w) || new File(String.format("%d.mp4", w)).exists());
         winners.add(w);
+        System.out.printf("Numero estratto: %d\n", w);
         return w;
     }
 
