@@ -2,6 +2,7 @@ package embeddedmediaplayer;
 
 import javafx.application.Application;
 import javafx.event.EventHandler;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -11,17 +12,16 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.io.*;
 import java.net.MalformedURLException;
 import java.util.HashSet;
-import java.util.Properties;
 import java.util.Random;
 import java.util.Set;
 
-import embeddedmediaplayer.Configs;
 
 @SuppressWarnings("SpellCheckingInspection")
 public class EmbeddedMediaPlayer extends Application {
@@ -32,6 +32,9 @@ public class EmbeddedMediaPlayer extends Application {
     @Override
     public void start(Stage primaryStage) {
         Configs.getConfig();
+        Rectangle2D reference = Screen.getScreens().get(Configs.SCREEN.getInt()).getVisualBounds();
+        primaryStage.setX(reference.getMinX());
+        primaryStage.setY(reference.getMinY());
         primaryStage.setTitle("I.T.E.T. Leonardo Da Vinci");
         primaryStage.setFullScreen(true);
         mediaRoot = new Group();
@@ -50,7 +53,6 @@ public class EmbeddedMediaPlayer extends Application {
     }
 
     private final Object lock = new Object();
-    @SuppressWarnings({"StatementWithEmptyBody", "InfiniteLoopStatement"})
     private void sayWinners(Scene scene, MediaView mView, ImageView iView) {
         for(int i = 0; i < Configs.CATEGORIES.getInt(); i++) {
             synchronized (lock) {

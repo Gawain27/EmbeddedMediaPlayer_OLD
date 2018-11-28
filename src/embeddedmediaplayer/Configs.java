@@ -10,7 +10,8 @@ public enum Configs {
     PATH("PATH", "images"),
     INTRO("INTRO", "INTRO.mp4"),
     SUSPANCE("SUSPANCE", "SUSPANCE.mp4"),
-    CANDIDATES("CANDIDATES", "150");
+    CANDIDATES("CANDIDATES", "150"),
+    SCREEN("SCREENS", "0");
 
     private static Properties config = null;
     private String key, defaultVal;
