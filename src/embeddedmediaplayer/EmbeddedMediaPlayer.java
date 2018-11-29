@@ -46,6 +46,7 @@ public class EmbeddedMediaPlayer extends Application {
         MediaView sView = new MediaView();
         imageRoot.getChildren().add(imageView);
         imageRoot.getChildren().add(sView);
+        System.out.println(imageRoot.getChildren().contains(sView));
         openNewVideo(scene, mediaView, Configs.INTRO.get(),
                 event -> (winnersThread = new Thread(() -> sayWinners(scene, mediaView, imageView, sView))).start(),
                 () -> mediaView.getMediaPlayer().seek(Duration.ZERO));
@@ -67,6 +68,8 @@ public class EmbeddedMediaPlayer extends Application {
                         }).start());
                         lock.wait();
                         openNewImage(scene, iView, String.format("%s.jpg", winner(i)), event -> {
+                            if (sView.getMediaPlayer()!= null)
+                                sView.getMediaPlayer().stop();
                             if (event.getCode().equals(KeyCode.END)) winnersThread.interrupt();
                             else new Thread(() -> {
                                 synchronized (lock) {
@@ -118,8 +121,11 @@ public class EmbeddedMediaPlayer extends Application {
         view.setImage(new Image(getResource(path, i)));
         if(mView != null && soundPath != null) {
             if(mView.getMediaPlayer() != null) mView.getMediaPlayer().stop();
-            if(!soundPath.equals("null"))
+            if(!soundPath.equals("null")) {
+                System.out.println("Inizio apertura audio");
                 mView.setMediaPlayer(new MediaPlayer(new Media(getResource(soundPath, -1))));
+                mView.getMediaPlayer().setAutoPlay(true);
+            }
         }
         scene.setRoot(imageRoot);
         scene.setOnKeyPressed(event);
