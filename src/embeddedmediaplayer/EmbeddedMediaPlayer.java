@@ -43,17 +43,18 @@ public class EmbeddedMediaPlayer extends Application {
         MediaView mediaView = new MediaView();
         mediaRoot.getChildren().add(mediaView);
         ImageView imageView = new ImageView();
+        MediaView sView = new MediaView();
         imageRoot.getChildren().add(imageView);
+        imageRoot.getChildren().add(sView);
         openNewVideo(scene, mediaView, Configs.INTRO.get(),
-                event -> (winnersThread = new Thread(() -> sayWinners(scene, mediaView, imageView))).start(),
+                event -> (winnersThread = new Thread(() -> sayWinners(scene, mediaView, imageView, sView))).start(),
                 () -> mediaView.getMediaPlayer().seek(Duration.ZERO));
-
         primaryStage.setScene(scene);
         primaryStage.show();
     }
 
     private final Object lock = new Object();
-    private void sayWinners(Scene scene, MediaView mView, ImageView iView) {
+    private void sayWinners(Scene scene, MediaView mView, ImageView iView, MediaView sView) {
         for(int i = 0; i < Configs.CATEGORIES.getInt(); i++) {
             synchronized (lock) {
                 try {
@@ -72,7 +73,7 @@ public class EmbeddedMediaPlayer extends Application {
                                     lock.notifyAll();
                                 }
                             }).start();
-                        }, i);
+                        }, i, sView, Configs.WINNERSOUND.get());
                         lock.wait();
                     }
                 } catch (InterruptedException ignored) {
@@ -80,7 +81,7 @@ public class EmbeddedMediaPlayer extends Application {
                 winners = new HashSet<>();
             }
         }
-            System.exit(1);
+            openNewImage(scene, iView, Configs.ENDIMAGE.get(), event -> System.exit(1), -1, sView, Configs.ENDSOUND.get());
     }
 
     private Set<Integer> winners = new HashSet<>();
@@ -112,8 +113,14 @@ public class EmbeddedMediaPlayer extends Application {
         openNewVideo(scene, view, path, event, onEnd, -1);
     }
 
-    private void openNewImage(Scene scene, ImageView view, String path, EventHandler<KeyEvent> event, int i){
+    private void openNewImage(Scene scene, ImageView view, String path,
+                              EventHandler<KeyEvent> event, int i, MediaView mView, String soundPath){
         view.setImage(new Image(getResource(path, i)));
+        if(mView != null && soundPath != null) {
+            if(mView.getMediaPlayer() != null) mView.getMediaPlayer().stop();
+            if(!soundPath.equals("null"))
+                mView.setMediaPlayer(new MediaPlayer(new Media(getResource(soundPath, -1))));
+        }
         scene.setRoot(imageRoot);
         scene.setOnKeyPressed(event);
     }

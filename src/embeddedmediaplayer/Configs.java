@@ -11,7 +11,10 @@ public enum Configs {
     INTRO("INTRO", "INTRO.mp4"),
     SUSPANCE("SUSPANCE", "SUSPANCE.mp4"),
     CANDIDATES("CANDIDATES", "150"),
-    SCREEN("SCREENS", "0");
+    SCREEN("SCREENS", "0"),
+    ENDIMAGE("ENDIMAGE", "END.jpg"),
+    WINNERSOUND("WINNERSOUND", "APPLAUSI.mp3"),
+    ENDSOUND("ENDSOUND", "null");
 
     private static Properties config = null;
     private String key, defaultVal;
