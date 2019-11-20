@@ -139,6 +139,9 @@ public class EmbeddedMediaPlayer extends Application {
         }
         scene.setRoot(imageRoot);
         scene.setOnKeyPressed(event);
+        view.fitWidthProperty().bind(scene.widthProperty());
+        view.fitHeightProperty().bind(scene.heightProperty());
+        view.setPreserveRatio(true);
     }
 
     private String getResource(String resourceName, int i){
