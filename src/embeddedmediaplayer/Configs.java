@@ -37,6 +37,7 @@ public enum Configs {
     }
 
     public int getInt(int i){
+        System.out.println("Stampo: " + i);
         return Integer.parseInt(get(i));
     }
 

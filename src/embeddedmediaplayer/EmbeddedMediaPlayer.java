@@ -1,6 +1,8 @@
 package embeddedmediaplayer;
 
 import javafx.application.Application;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.DoubleProperty;
 import javafx.event.EventHandler;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
@@ -91,7 +93,10 @@ public class EmbeddedMediaPlayer extends Application {
     private int winner(int i) {
         Random rand = new Random();
         int w;
-        do w = rand.nextInt(Configs.CANDIDATES.getInt(i));
+        do{
+            System.out.println("I: " + i);
+            w = rand.nextInt(Configs.CANDIDATES.getInt(i));
+        }
         while (winners.contains(w) || new File(String.format("%s%d%s%s.jpg",
                 Configs.PATH.get(),
                 i,
@@ -110,6 +115,11 @@ public class EmbeddedMediaPlayer extends Application {
         view.setMediaPlayer(player);
         scene.setRoot(mediaRoot);
         scene.setOnKeyPressed(event);
+        DoubleProperty elementWidth = view.fitWidthProperty();
+        DoubleProperty elementHeight = view.fitHeightProperty();
+        elementWidth.bind(Bindings.selectDouble(view.sceneProperty(), "width"));
+        elementHeight.bind(Bindings.selectDouble(view.sceneProperty(), "height"));
+        view.setPreserveRatio(true);
     }
 
     private void openNewVideo(Scene scene, MediaView view, String path, EventHandler<KeyEvent> event, Runnable onEnd){
