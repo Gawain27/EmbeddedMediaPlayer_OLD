@@ -142,6 +142,11 @@ public class EmbeddedMediaPlayer extends Application {
         view.fitWidthProperty().bind(scene.widthProperty());
         view.fitHeightProperty().bind(scene.heightProperty());
         view.setPreserveRatio(true);
+        double reducCoeff = (view.getFitWidth() / view.getImage().getWidth() >= view.getFitHeight() / view.getImage().getHeight())
+                ? (view.getFitHeight() / view.getImage().getHeight())
+                : (view.getFitWidth() / view.getImage().getWidth());
+        view.setX((view.getFitWidth() - (view.getImage().getWidth() * reducCoeff)) / 2);
+        view.setY((view.getFitHeight() - (view.getImage().getHeight() * reducCoeff)) / 2);
     }
 
     private String getResource(String resourceName, int i){
